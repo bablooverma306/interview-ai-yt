@@ -2,6 +2,7 @@ const userModel = require("../models/user.model")
 const bcrypt = require("bcryptjs")
 const jwt = require("jsonwebtoken")
 const tokenBlacklistModel = require("../models/blacklist.model")
+const env = require("../config/env")
 
 /**
  * @name registerUserController
@@ -38,7 +39,7 @@ async function registerUserController(req, res) {
 
     const token = jwt.sign(
         { id: user._id, username: user.username },
-        process.env.JWT_SECRET,
+        env.jwtSecret,
         { expiresIn: "1d" }
     )
 
@@ -84,7 +85,7 @@ async function loginUserController(req, res) {
 
     const token = jwt.sign(
         { id: user._id, username: user.username },
-        process.env.JWT_SECRET,
+        env.jwtSecret,
         { expiresIn: "1d" }
     )
 
