@@ -5,6 +5,8 @@ const env = require("./config/env")
 
 const app = express()
 
+app.set("trust proxy", 1)
+
 app.use(express.json())
 app.use(cookieParser())
 app.use(cors({

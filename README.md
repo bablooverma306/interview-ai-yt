@@ -62,10 +62,17 @@ npm run build
 ```
 
 ## Deployment Notes
-- Frontend can be deployed on Vercel.
-- Backend should run on a Node hosting platform like Render, Railway, or Fly.io.
-- Set the backend public URL in `Frontend/.env` using `VITE_API_BASE_URL`.
-- In production, set `CLIENT_ORIGIN` on the backend to the deployed frontend URL.
+- This repo includes `render.yaml` for deploying both services on Render.
+- Render service names used in the blueprint:
+  - `interview-ai-backend`
+  - `interview-ai-frontend`
+- Backend env on Render:
+  - `MONGO_DB`
+  - `JWT_SECRET`
+  - `GEMINI_API_KEY`
+- Frontend env on Render:
+  - `VITE_API_BASE_URL`
+- In production, `CLIENT_ORIGIN` should match the deployed frontend URL.
 
 ## Git Ignore
 Common local files are ignored through the root `.gitignore`, plus backend/frontend-specific ignore files.

@@ -11,6 +11,12 @@ const env = {
     jwtSecret: process.env.JWT_SECRET || (isProduction ? "" : "interview-ai-dev-secret"),
     geminiApiKey: process.env.GEMINI_API_KEY || process.env.GOOGLE_GENAI_API_KEY,
     clientOrigin: process.env.CLIENT_ORIGIN || process.env.FRONTEND_URL || "http://localhost:5173",
+    isProduction,
+    cookieOptions: {
+        httpOnly: true,
+        secure: isProduction,
+        sameSite: isProduction ? "none" : "lax",
+    },
 }
 
 if (!env.mongoUri) {
