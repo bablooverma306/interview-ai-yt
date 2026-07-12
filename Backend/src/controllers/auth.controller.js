@@ -126,10 +126,21 @@ async function logoutUserController(req, res) {
  * @access private
  */
 async function getMeController(req, res) {
+    if (!req.user?.id) {
+        return res.status(200).json({
+            message: "No active session",
+            user: null
+        })
+    }
 
     const user = await userModel.findById(req.user.id)
 
-
+    if (!user) {
+        return res.status(200).json({
+            message: "No active session",
+            user: null
+        })
+    }
 
     res.status(200).json({
         message: "User details fetched successfully",
