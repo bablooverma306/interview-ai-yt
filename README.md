@@ -31,6 +31,8 @@ PORT=3000
 NODE_ENV=development
 ```
 
+For Render, set `MONGO_DB` or `MONGO_URI` to a full MongoDB Atlas URI that starts with `mongodb+srv://` or `mongodb://`.
+
 ### Frontend
 Create `Frontend/.env` with:
 ```env

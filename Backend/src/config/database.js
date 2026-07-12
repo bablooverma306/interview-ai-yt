@@ -10,11 +10,11 @@ async function connectToDB() {
         console.log("Connected to Database")
     }
     catch (err) {
-        console.error("Primary database connection failed:", err.message)
+        console.error("Database connection failed:", err.message)
 
         const fallbackMongoUri = process.env.LOCAL_MONGO_URI || "mongodb://127.0.0.1:27017/interview-ai-yt"
 
-        if (env.mongoUri !== fallbackMongoUri) {
+        if (!env.isProduction && env.mongoUri !== fallbackMongoUri) {
             try {
                 await mongoose.connect(fallbackMongoUri)
                 console.log("Connected to local fallback database")
