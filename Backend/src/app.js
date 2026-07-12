@@ -14,6 +14,13 @@ app.use(cors({
     credentials: true
 }))
 
+app.get("/", (req, res) => {
+    res.status(200).json({
+        message: "Interview AI backend is running",
+        status: "ok"
+    })
+})
+
 /* require all the routes here */
 const authRouter = require("./routes/auth.routes")
 const interviewRouter = require("./routes/interview.routes")
