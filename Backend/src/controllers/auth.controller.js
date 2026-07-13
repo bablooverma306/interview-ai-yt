@@ -4,6 +4,10 @@ const jwt = require("jsonwebtoken")
 const tokenBlacklistModel = require("../models/blacklist.model")
 const env = require("../config/env")
 
+function escapeRegex(value) {
+    return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
+}
+
 /**
  * @name registerUserController
  * @description register a new user, expects username, email and password in the request body
@@ -11,7 +15,9 @@ const env = require("../config/env")
  */
 async function registerUserController(req, res) {
 
-    const { username, email, password } = req.body
+    const username = (req.body.username || "").trim()
+    const email = (req.body.email || "").trim().toLowerCase()
+    const password = req.body.password || ""
 
     if (!username || !email || !password) {
         return res.status(400).json({
@@ -20,7 +26,10 @@ async function registerUserController(req, res) {
     }
 
     const isUserAlreadyExists = await userModel.findOne({
-        $or: [ { username }, { email } ]
+        $or: [
+            { email },
+            { username: { $regex: `^${escapeRegex(username)}$`, $options: "i" } }
+        ]
     })
 
     if (isUserAlreadyExists) {
@@ -68,10 +77,18 @@ async function loginUserController(req, res) {
     const { email, identifier, password } = req.body
     const loginValue = (identifier || email || "").trim()
 
+    if (!loginValue || !password) {
+        return res.status(400).json({
+            message: "Please provide email/username and password"
+        })
+    }
+
     const user = await userModel.findOne({
         $or: [
-            { email: loginValue },
-            { username: loginValue }
+            { email: loginValue.toLowerCase() },
+            { username: loginValue },
+            { username: { $regex: `^${escapeRegex(loginValue)}$`, $options: "i" } },
+            { email: { $regex: `^${escapeRegex(loginValue.toLowerCase())}$`, $options: "i" } }
         ]
     })
 
