@@ -65,13 +65,19 @@ async function registerUserController(req, res) {
  */
 async function loginUserController(req, res) {
 
-    const { email, password } = req.body
+    const { email, identifier, password } = req.body
+    const loginValue = (identifier || email || "").trim()
 
-    const user = await userModel.findOne({ email })
+    const user = await userModel.findOne({
+        $or: [
+            { email: loginValue },
+            { username: loginValue }
+        ]
+    })
 
     if (!user) {
         return res.status(400).json({
-            message: "Invalid email or password"
+            message: "Invalid email/username or password"
         })
     }
 
@@ -79,7 +85,7 @@ async function loginUserController(req, res) {
 
     if (!isPasswordValid) {
         return res.status(400).json({
-            message: "Invalid email or password"
+            message: "Invalid email/username or password"
         })
     }
 

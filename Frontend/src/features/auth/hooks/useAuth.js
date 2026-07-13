@@ -19,10 +19,10 @@ export const useAuth = () => {
     }
 
 
-    const handleLogin = async ({ email, password }) => {
+    const handleLogin = async ({ identifier, email, password }) => {
         setLoading(true)
         try {
-            const data = await login({ email, password })
+            const data = await login({ identifier, email, password })
             if (data?.user) {
                 persistUser(data.user)
                 return { ok: true, data }

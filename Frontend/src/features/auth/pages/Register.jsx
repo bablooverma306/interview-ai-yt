@@ -15,7 +15,7 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault()
         setError("")
-        const result = await handleRegister({ username, email: email.trim(), password })
+        const result = await handleRegister({ username: username.trim(), email: email.trim(), password })
         if (result?.ok) {
             navigate("/")
         } else if (result?.error) {
