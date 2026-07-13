@@ -2,11 +2,19 @@ const jwt = require("jsonwebtoken")
 const tokenBlacklistModel = require("../models/blacklist.model")
 const env = require("../config/env")
 
+function getTokenFromRequest(req) {
+    const authHeader = req.headers.authorization || ""
+    if (authHeader.startsWith("Bearer ")) {
+        return authHeader.slice(7).trim()
+    }
+
+    return req.cookies.token
+}
+
 
 
 async function authUser(req, res, next) {
-
-    const token = req.cookies.token
+    const token = getTokenFromRequest(req)
 
     if (!token) {
         return res.status(401).json({
@@ -42,7 +50,7 @@ async function authUser(req, res, next) {
 
 
 async function optionalAuthUser(req, res, next) {
-    const token = req.cookies.token
+    const token = getTokenFromRequest(req)
 
     if (!token) {
         req.user = null

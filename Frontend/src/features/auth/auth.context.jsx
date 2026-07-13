@@ -14,13 +14,14 @@ export const AuthProvider = ({ children }) => {
             return null
         }
     })
+    const [token, setToken] = useState(() => localStorage.getItem("auth_token") || "")
     const [loading, setLoading] = useState(true)
 
     
 
 
     return (
-        <AuthContext.Provider value={{user,setUser,loading,setLoading}} >
+        <AuthContext.Provider value={{user,setUser,token,setToken,loading,setLoading}} >
             {children}
         </AuthContext.Provider>
     )

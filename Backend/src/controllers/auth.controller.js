@@ -8,6 +8,15 @@ function escapeRegex(value) {
     return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&")
 }
 
+function getTokenFromRequest(req) {
+    const authHeader = req.headers.authorization || ""
+    if (authHeader.startsWith("Bearer ")) {
+        return authHeader.slice(7).trim()
+    }
+
+    return req.cookies.token
+}
+
 /**
  * @name registerUserController
  * @description register a new user, expects username, email and password in the request body
@@ -57,6 +66,7 @@ async function registerUserController(req, res) {
 
     res.status(201).json({
         message: "User registered successfully",
+        token,
         user: {
             id: user._id,
             username: user.username,
@@ -115,6 +125,7 @@ async function loginUserController(req, res) {
     res.cookie("token", token, env.cookieOptions)
     res.status(200).json({
         message: "User loggedIn successfully.",
+        token,
         user: {
             id: user._id,
             username: user.username,
@@ -130,7 +141,7 @@ async function loginUserController(req, res) {
  * @access public
  */
 async function logoutUserController(req, res) {
-    const token = req.cookies.token
+    const token = getTokenFromRequest(req)
 
     if (token) {
         await tokenBlacklistModel.create({ token })
