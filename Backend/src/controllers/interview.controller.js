@@ -38,6 +38,12 @@ async function generateInterViewReportController(req, res) {
  * @description Controller to get interview report by interviewId.
  */
 async function getInterviewReportByIdController(req, res) {
+    if (!req.user?.id) {
+        return res.status(200).json({
+            message: "No active session",
+            interviewReport: null
+        })
+    }
 
     const { interviewId } = req.params
 
@@ -60,6 +66,13 @@ async function getInterviewReportByIdController(req, res) {
  * @description Controller to get all interview reports of logged in user.
  */
 async function getAllInterviewReportsController(req, res) {
+    if (!req.user?.id) {
+        return res.status(200).json({
+            message: "No active session",
+            interviewReports: []
+        })
+    }
+
     const interviewReports = await interviewReportModel.find({ user: req.user.id }).sort({ createdAt: -1 }).select("-resume -selfDescription -jobDescription -__v -technicalQuestions -behavioralQuestions -skillGaps -preparationPlan")
 
     res.status(200).json({
