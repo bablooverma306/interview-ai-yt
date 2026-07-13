@@ -10,12 +10,16 @@ const Login = () => {
 
     const [ email, setEmail ] = useState("")
     const [ password, setPassword ] = useState("")
+    const [error, setError] = useState("")
 
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const data = await handleLogin({ email, password })
-        if (data?.user) {
+        setError("")
+        const result = await handleLogin({ email: email.trim(), password })
+        if (result?.ok) {
             navigate('/')
+        } else if (result?.error) {
+            setError(typeof result.error === "string" ? result.error : "Login failed")
         }
     }
 
@@ -33,7 +37,7 @@ const Login = () => {
                         <label htmlFor="email">Email</label>
                         <input
                             onChange={(e) => { setEmail(e.target.value) }}
-                            type="email" id="email" name='email' placeholder='Enter email address' />
+                            type="text" id="email" name='email' placeholder='Enter email address' />
                     </div>
                     <div className="input-group">
                         <label htmlFor="password">Password</label>
@@ -43,6 +47,7 @@ const Login = () => {
                     </div>
                     <button className='button primary-button' >Login</button>
                 </form>
+                {error && <p className="form-error">{error}</p>}
                 <p>Don't have an account? <Link to={"/register"} >Register</Link> </p>
             </div>
         </main>

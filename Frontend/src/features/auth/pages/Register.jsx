@@ -8,14 +8,18 @@ const Register = () => {
     const [ username, setUsername ] = useState("")
     const [ email, setEmail ] = useState("")
     const [ password, setPassword ] = useState("")
+    const [error, setError] = useState("")
 
     const {loading,handleRegister} = useAuth()
     
     const handleSubmit = async (e) => {
         e.preventDefault()
-        const data = await handleRegister({ username, email, password })
-        if (data?.user) {
+        setError("")
+        const result = await handleRegister({ username, email: email.trim(), password })
+        if (result?.ok) {
             navigate("/")
+        } else if (result?.error) {
+            setError(typeof result.error === "string" ? result.error : "Registration failed")
         }
     }
 
@@ -40,7 +44,7 @@ const Register = () => {
                         <label htmlFor="email">Email</label>
                         <input
                             onChange={(e) => { setEmail(e.target.value) }}
-                            type="email" id="email" name='email' placeholder='Enter email address' />
+                            type="text" id="email" name='email' placeholder='Enter email address' />
                     </div>
                     <div className="input-group">
                         <label htmlFor="password">Password</label>
@@ -52,6 +56,7 @@ const Register = () => {
                     <button className='button primary-button' >Register</button>
 
                 </form>
+                {error && <p className="form-error">{error}</p>}
 
                 <p>Already have an account? <Link to={"/login"} >Login</Link> </p>
             </div>
