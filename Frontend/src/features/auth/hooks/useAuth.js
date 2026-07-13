@@ -9,16 +9,25 @@ export const useAuth = () => {
     const context = useContext(AuthContext)
     const { user, setUser, loading, setLoading } = context
 
+    const persistUser = (nextUser) => {
+        setUser(nextUser)
+        if (nextUser) {
+            localStorage.setItem("auth_user", JSON.stringify(nextUser))
+        } else {
+            localStorage.removeItem("auth_user")
+        }
+    }
+
 
     const handleLogin = async ({ email, password }) => {
         setLoading(true)
         try {
             const data = await login({ email, password })
             if (data?.user) {
-                setUser(data.user)
+                persistUser(data.user)
                 return { ok: true, data }
             }
-            setUser(null)
+            persistUser(null)
             return { ok: false, error: "Login failed" }
         } catch (err) {
             return { ok: false, error: err }
@@ -32,10 +41,10 @@ export const useAuth = () => {
         try {
             const data = await register({ username, email, password })
             if (data?.user) {
-                setUser(data.user)
+                persistUser(data.user)
                 return { ok: true, data }
             }
-            setUser(null)
+            persistUser(null)
             return { ok: false, error: "Registration failed" }
         } catch (err) {
             return { ok: false, error: err }
@@ -48,7 +57,7 @@ export const useAuth = () => {
         setLoading(true)
         try {
             const data = await logout()
-            setUser(null)
+            persistUser(null)
         } catch (err) {
 
         } finally {
@@ -63,9 +72,9 @@ export const useAuth = () => {
 
                 const data = await getMe()
                 if (data?.user) {
-                    setUser(data.user)
+                    persistUser(data.user)
                 } else {
-                    setUser(null)
+                    persistUser(null)
                 }
             } catch (err) { } finally {
                 setLoading(false)
